@@ -98,7 +98,13 @@ var UIController = (function () {
         inputValue: '.add__value',
         inputButton: '.add__btn',
         incomeContainer: '.income__list',
-        expenseContainer: '.expenses__list'
+        expenseContainer: '.expenses__list',
+        budgetLabel: '.budget__value',
+        incomeLabel: '.budget__income--value',
+        expenseLabel: '.budget__expenses--value',
+        percentageLabel: '.budget__expenses--percentage'
+
+
     };
 
     return {
@@ -127,9 +133,7 @@ var UIController = (function () {
 
             // Insert the html in to the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
-
         },
-
 
         clearFields: function () {
             var fields, fieldsArr;
@@ -143,13 +147,25 @@ var UIController = (function () {
             fieldsArr[0].focus();
         },
 
+        displayBudget: function (obj) {
+            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+            document.querySelector(DOMStrings.expenseLabel).textContent = obj.totalExp;
+
+
+            if (obj.percentage > 0) {
+                document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
+            } else {
+                document.querySelector(DOMStrings.percentageLabel).textContent = '---';
+            }
+        },
+
         getDOMStrings: function () {
             return DOMStrings;
         }
     };
 
 })();
-
 
 // Global app controller
 var controller = (function (budgetCtrl, UICtrl) {
@@ -175,7 +191,7 @@ var controller = (function (budgetCtrl, UICtrl) {
         budget = budgetController.getBudget();
 
         // 3. Display the budget on the US
-        console.log(budget);
+        UICtrl.displayBudget(budget);
     };
 
     var ctrlAddItem = function () {
@@ -201,6 +217,12 @@ var controller = (function (budgetCtrl, UICtrl) {
     return {
         init: function () {
             console.log('application has started');
+            UICtrl.displayBudget({
+                budget: 0,
+                totalInc: 0,
+                totalExp: 0,
+                percentage: -1
+            });
             setupEventListeners();
         }
     };
